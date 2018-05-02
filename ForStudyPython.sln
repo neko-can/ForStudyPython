@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2037
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ForStudyPython", "ForStudyPython\ForStudyPython.pyproj", "{EAC21510-9EBA-432D-9E0D-69C28BA1E9A2}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "GoalWork", "GoalWork\GoalWork.pyproj", "{629719C5-1AE5-4117-94E4-EAA00D0B9D29}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EAC21510-9EBA-432D-9E0D-69C28BA1E9A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EAC21510-9EBA-432D-9E0D-69C28BA1E9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{629719C5-1AE5-4117-94E4-EAA00D0B9D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{629719C5-1AE5-4117-94E4-EAA00D0B9D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {80613DC5-9127-4F6D-9E23-8CF3991A8DBA}
+	EndGlobalSection
+EndGlobal
