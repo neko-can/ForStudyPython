@@ -7,3 +7,12 @@ Pythonの勉強のため
 変数の型によって決まる
 * 値型 : int, float, str, tuple, bytes, frozenset等
 * 参照型 : list, dict, set, bytearray等
+
+## 変数のスコープ
+* selfとは別にアンダーバーによってアクセスを制限できる。
+
+```
+self.test #外部からアクセス可能
+self._test #呼び出すと警告が出る
+self.__test #外部から呼び出せない。AttributeError。._Test__testとすれば呼び出せる。
+```
