@@ -68,7 +68,7 @@ class FileModule:
 
     def ShowFileArray(self):
         self.fileNameListClass.Load()
-        print(self.fileNameListClass.fileNameArray)
+        self.CM.printWithNumber(self.fileNameListClass.fileNameArray)
         self.CM.PrintLog("ファイルリスト表示完了しました。")
 
 class FileClass:
@@ -124,6 +124,12 @@ class MenuModule:
         self.CM = CM.CommonModule()
         self.FM = FileModule(fileNameListClass, fileClass)
         
+        #Open command
+        self.filefunc = [self._Openhelp for i in range(self.fileNameListClass.fileNameArray.shape[0])]
+        self.subcommand = {"showfilearray" : self.FM.ShowFileArray}
+        self.transcommand = dict(zip(self.fileNameListClass.fileNameArray, self.filefunc))
+        self.Opencmd = CM.CommandModule(commandquestion="ファイルを開く : ", subcommand=self.subcommand, transcommand=self.transcommand)
+
     def Save(self):
         self.FM.AddFileNameList(self.fileClass.fileName)
         np.save(self.fileNameListClass.fileName, self.fileNameListClass
@@ -135,20 +141,12 @@ class MenuModule:
         self.CM.PrintLog("新規保存しました。")
 
     def OpenFile(self):
-        #変数リセット
         self.fileNameListClass.Load()
-        self.FM.OpenShowCommand()
-        self.FM.IsInOpenMode = True
+        self.Opencmd.ShowCommand()
+        self.Opencmd.Main()
 
-        while self.FM.IsInOpenMode:
-            command = input("ファイルを開く : ")
-
-            if command in self.FM.openCommand.keys():
-                self.FM.openCommand[command]()
-
-            if command in self.fileNameListClass.fileNameArray:
-                self.fileClass.Open(command)
-                self.FM.IsInOpenMode = False
+    def _Openhelp(self):
+        self.fileClass.Open(self.Opencmd.command)
 
     def NewFile(self):
         self.CM.PrintLog("新しいファイルを作成しました。")

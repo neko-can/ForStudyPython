@@ -5,6 +5,7 @@
 """
 
 import numpy as np
+import sys
 
 class CommonMainModule:
     def __init__(self, MyAnalysisID):
@@ -45,15 +46,6 @@ class CommonModule:
     def PrintLog(self, log):
         print(" - " + str(log))
 
-    def InputFloat(str):
-        inputValue = input(str)
-        try:
-            inputValue = float(inputValue)
-        except ValueError:
-            InputFloat(str)
-
-        return inputValue
-
     def IsFloat(self, str):
         result = None
 
@@ -64,3 +56,73 @@ class CommonModule:
             result = False
 
         return result
+
+    def inputInOption(self, str, option):
+        result = input(str)
+        if result not in option:
+            print("入力ミスです。")
+            result = self.inputInOption(str, option)
+
+        return result
+
+    def printList(self, targetlist):
+        print(targetlist) #後で実装
+
+    def printWithNumber(self, ndarray):
+        noline = ndarray.shape[0]
+        for i in range(noline):
+            print(str(i) + ". " + str(ndarray[i]))
+
+class CommandModule:
+    def __init__(self, **kwargs):
+        
+        self.option = {"commandquestion" : "command : ",
+                       "cancelstr" : "キャンセルされました。",
+                       "cancelcommand" : "cancel",
+                       "cancelfunc" : self.Cancel,
+                       "subcommand" : {},
+                       "transcommand" : {}}
+        self.option.update(kwargs)
+        
+        self.CM = CommonModule()
+        
+        self.__isPlay = True
+        self.__subcommand = {"showcommand" : self.ShowCommand}
+        self.__transcommand = {self.option["cancelcommand"] : self.option["cancelcommand"]}
+        self.commandquestion = self.option["commandquestion"]
+        self.cancelstr = self.option["cancelstr"]
+        self.subcommand = self.option["subcommand"]
+        self.transcommand = self.option["transcommand"]
+
+        self.UpdateWithoutOverride(self.__subcommand, self.subcommand) 
+        self.UpdateWithoutOverride(self.__transcommand, self.transcommand)
+        self.CheckKeyDuplication(self.__subcommand, self.__transcommand)
+
+    def UpdateWithoutOverride(self, originaldic, adddic):
+        self.CheckKeyDuplication(originaldic, adddic, qstr="存在しているキーが含まれています。")
+        originaldic.update(adddic) #dicは参照型
+
+    def CheckKeyDuplication(self, dic1, dic2, qstr="キーが重複しています。"):
+        for key in [*dic1]:
+            if key in [*dic2]:
+                raise KeyError(qstr)
+
+    def Cancel(self):
+        print(self.cancelstr)
+        
+    def ShowCommand(self):
+        self.CM.printList([*self.__subcommand])
+        self.CM.printList([*self.__transcommand])
+
+    def Main(self):
+        self.__isPlay = True
+        self.command = None
+
+        while self.__isPlay:
+            self.command = input(self.commandquestion)
+
+            if self.command in [*self.__transcommand]:
+                self.__transcommand[self.command]()
+                self.__isPlay = False
+            elif self.command in [*self.__subcommand]:
+                self.__subcommand[self.command]()

@@ -52,6 +52,21 @@ class MyAnalysis:
         self.IsPlay = True
         self.mainMenu = {"start" : self.MainStart}
 
+        ##ver2
+        #self.menuModule = MenuModule(self)
+        #self.phaselist = ["start", "file", "analysis"]
+        #self.funclist = [self.menuModule.ChangeMenu for i in range(len(self.phaselist))]
+        #self.cmddict = dict(zip(self.phaselist, self.cmddict))
+        ##Start Command
+        #self.transcommand = {"analysis" : self.menuModule.ChangeMenu,
+        #                     "file" : self.menuModule.ChangeMenu}
+        #self.Startcmd = CM.CommandModule(commandquestion="ファイルを開く : ", transcommand=transcommand, cancelstr="プログラムを終了します。", cancelcommand="end")
+        ##File Command
+        #self.transcommand = {}
+
+        ##main
+        #self.maincmd = self.Startcmd
+
     def Main(self):
         #変数初期化
         self.CMM.ChangeMenu("start")
@@ -59,7 +74,6 @@ class MyAnalysis:
 
         while self.IsPlay:
             self.main()
-
 
     def EndProgram(self):
         self.IsPlay = False
@@ -79,5 +93,12 @@ class MyAnalysis:
 
     def MainFile(self):
         self.CMM.InputChangeMenu("ファイル > ")
+
+#class MenuModule:
+#    def __init__(self, myAnalysis):
+#        self.myAnalysis = myAnalysis
+
+#    def ChangeMenu(self):
+#        self.myAnalysis.maincmd = self.myAnalysis.cmddict[self.myAnalysis.maincmd.command]
 
 MyAnalysis().Main()
