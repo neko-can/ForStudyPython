@@ -8,97 +8,48 @@
 """
 
 import numpy as np
-import MyCommonModule as CM
-import MyFileModule as FM
+from MyCommonModule import *
+from MyFileModule import *
+
 
 class MyAnalysis:
     def __init__(self):
         
         #ソース管理
-        self.CMM = CM.CommonMainModule(self)
-        self.fileNameListClass = FM.FileNameListClass()
-        self.fileClass = FM.FileClass(self.fileNameListClass) #初期ファイルデータ生成
-        self.FMM = FM.MenuModule(self.fileClass, self.fileNameListClass)
+        self.CMM = CommonMainModule(self)
+        self.fileNameListClass = FileNameListClass()
+        self.fileClass = FileClass(self.fileNameListClass) #初期ファイルデータ生成
+        self.FMM = MenuModule(self)
         
-        #メニューの変更方法：Menu宣言→menuListに登録
-        self.startMenu = { "analysis" : self.MainAnalysis, 
-                           "file" : self.MainFile}
-        self.startSubMenu = {"end" : self.EndProgram}
-        self.startAllMenu = {"main" : self.startMenu,
-                             "sub" : self.startSubMenu}
-        
-        self.fileMenu = {"start" : self.MainStart}
-        self.fileSubMenu = {"save" : self.FMM.Save,
-                            "saveAsNew" : self.FMM.SaveAsNew,
-                            "open" : self.FMM.OpenFile,
-                            "newFile" : self.FMM.NewFile,
-                            "renameFile" : self.FMM.RenameFile,
-                            "showData" : self.FMM.ShowData,
-                            "addData" : self.FMM.AddData}
-        self.fileAllMenu = {"main" : self.fileMenu,
-                            "sub" : self.fileSubMenu}
+        #ver3
+        self.startphase = ["file", "analysis"]
+        self.startfunc = {}
+        self.filephase = ["start"]
+        self.filefunc = {"save" : self.FMM.Save,
+                         "saveasnew" : self.FMM.SaveAsNew, #未実装
+                         "open" : self.FMM.OpenMode.Main,
+                         "newfile" : self.FMM.NewFile, #未実装
+                         "renamefile" : self.FMM.RenameFile,
+                         "showdata" : self.FMM.ShowData,
+                         "showfile" : self.FMM.ShowFileList,
+                         "showarray" : self.FMM.ShowArrayList,
+                         "adddata" : self.FMM.AddData}
+        self.analysisphase = ["start"]
+        self.analysisfunc = {}
 
-        self.analysisMenu = {"start" : self.MainStart}
-        self.analysisSubMenu = {}
-        self.analysisAllMenu = {"main" : self.analysisMenu,
-                                "sub" : self.analysisSubMenu}
-
-        self.menuList = {"start" : self.startAllMenu,
-                         "file" : self.fileAllMenu,
-                         "analysis" : self.analysisAllMenu}
-
-        #mainの初期値
-        self.main = None
-        self.IsPlay = True
-        self.mainMenu = {"start" : self.MainStart}
-
-        ##ver2
-        #self.menuModule = MenuModule(self)
-        #self.phaselist = ["start", "file", "analysis"]
-        #self.funclist = [self.menuModule.ChangeMenu for i in range(len(self.phaselist))]
-        #self.cmddict = dict(zip(self.phaselist, self.cmddict))
-        ##Start Command
-        #self.transcommand = {"analysis" : self.menuModule.ChangeMenu,
-        #                     "file" : self.menuModule.ChangeMenu}
-        #self.Startcmd = CM.CommandModule(commandquestion="ファイルを開く : ", transcommand=transcommand, cancelstr="プログラムを終了します。", cancelcommand="end")
-        ##File Command
-        #self.transcommand = {}
-
-        ##main
-        #self.maincmd = self.Startcmd
+        self.isPlay = True
+        self.StartMode = OriginalClass(MyAnalysis=self, funclist=self.startfunc,phaselist=self.startphase, question="スタートメニュー選択 : ")
+        self.FileMode = FileMode(self, funclist=self.filefunc, phaselist=self.filephase)
+        self.AnalysisMode = OriginalClass(MyAnalysis=self, funclist=self.analysisfunc, phaselist=self.analysisphase, question="分析メニュー選択 : ")
+        self.AllMode = {"start" : self.StartMode,
+                        "file" : self.FileMode,
+                        "analysis" : self.AnalysisMode}
+        self.MainClass = self.StartMode
+        self.MainClass.ShowCommand()
 
     def Main(self):
-        #変数初期化
-        self.CMM.ChangeMenu("start")
-        self.IsPlay = True
+        while self.isPlay:
+            self.MainClass.Main()
 
-        while self.IsPlay:
-            self.main()
-
-    def EndProgram(self):
-        self.IsPlay = False
-        print("プログラムを終了します")
-
-    def MainStart(self):
-        self.CMM.InputChangeMenu("スタートメニュー選択  > ")
-
-    def MainAnalysis(self):
-        """
-        機能
-        ・分析メニュー選択
-        ・分析対象ファイル選択→分析内容選択→結果表示
-        """
-
-        self.CMM.InputChangeMenu("分析 > ")
-
-    def MainFile(self):
-        self.CMM.InputChangeMenu("ファイル > ")
-
-#class MenuModule:
-#    def __init__(self, myAnalysis):
-#        self.myAnalysis = myAnalysis
-
-#    def ChangeMenu(self):
-#        self.myAnalysis.maincmd = self.myAnalysis.cmddict[self.myAnalysis.maincmd.command]
-
+#ver 3
 MyAnalysis().Main()

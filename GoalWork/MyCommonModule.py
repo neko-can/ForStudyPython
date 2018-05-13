@@ -73,6 +73,17 @@ class CommonModule:
         for i in range(noline):
             print(str(i) + ". " + str(ndarray[i]))
 
+    #ver3
+    def UpdateWithoutOverride(originaldic, adddic):
+        CommonModule.CheckKeyDuplication(originaldic, adddic, qstr="存在しているキーが含まれています。")
+        originaldic.update(adddic) #dicは参照型
+
+    def CheckKeyDuplication(dic1, dic2, qstr="キーが重複しています。"):
+        for key in [*dic1]:
+            if key in [*dic2]:
+                raise KeyError(qstr)
+
+
 class CommandModule:
     def __init__(self, **kwargs):
         
@@ -126,3 +137,39 @@ class CommandModule:
                 self.__isPlay = False
             elif self.command in [*self.__subcommand]:
                 self.__subcommand[self.command]()
+
+#ver3
+class OriginalClass:
+    def __init__(self, MyAnalysis, **kwargs):
+        self.CM = CommonModule()
+        self.MyAnalysis = MyAnalysis
+        self.option = {"question" : "command : ",
+                       "funclist" : {},
+                       "phaselist" : []}
+        self.option.update(kwargs)
+
+        self.funclist = {"showcommand" : self.ShowCommand,
+                         "end" : self.EndProgram}
+        self.phaselist = self.option["phaselist"]
+
+        CommonModule.UpdateWithoutOverride(self.funclist, self.option["funclist"])
+        self.question = self.option["question"]
+
+    def Main(self):
+        command = input(self.question)
+        if command in [*self.funclist]:
+            self.funclist[command]()
+        elif command in self.phaselist:
+            self.ChangePhase(command)
+
+    def ShowCommand(self):
+        print(self.phaselist)
+        print([*self.funclist])
+
+    def EndProgram(self):
+        self.MyAnalysis.isPlay = False
+        print("プログラムを終了します。。。")
+    
+    def ChangePhase(self, nextphase):
+        self.MyAnalysis.MainClass = self.MyAnalysis.AllMode[nextphase]
+        self.MyAnalysis.MainClass.ShowCommand()

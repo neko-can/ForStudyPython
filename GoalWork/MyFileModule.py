@@ -1,20 +1,12 @@
 import numpy as np
-import MyCommonModule as CM
+from MyCommonModule import *
 
 class FileModule:
     def __init__(self, fileNameListClass, fileClass):
-        self.CM = CM.CommonModule()
+        self.CM = CommonModule()
         self.fileNameListClass = fileNameListClass
         self.fileClass = fileClass
         self.NGList = [self.fileNameListClass.fileName, " ", "\\", "/", ":", "*", "?", "\"", "<", ">", "|"] #名前を".npy"変換した後にチェック
-        self.openCommand = {"cancel" : self.OpenCancel,
-                            "showFileList" : self.ShowFileArray,
-                            "showCommand" : self.OpenShowCommand}
-        self.IsInOpenMode = True
-
-        self.addCommand = {"finish" : self.AddFinish,
-                           "showData" : self.AddShowData}
-        self.IsInAddMode = True
 
     def NewName(self, fileName):
         fileName = self.AddNPY(fileName) #.npy拡張子付与
@@ -54,11 +46,6 @@ class FileModule:
         if not(fileName in self.fileNameListClass.fileNameArray):
             self.fileNameListClass.fileNameArray = np.append(self.fileNameListClass.fileNameArray, fileName)
 
-    def OpenCancel(self):
-        self.IsInOpenMode = False
-    def OpenShowCommand(self):
-        print(self.openCommand.keys())
-
     def AddFinish(self):
         self.IsInAddMode = False
     def AddShowData(self):
@@ -89,7 +76,6 @@ class FileClass:
             self.targetListName2 = None
             self.noSame = 0
 
-            print("ファイルを開きました。")
         except:
             fileList = self.fileNameListClass.fileNameArray.tolist()
             fileList.remove(fileName)
@@ -118,38 +104,32 @@ class FileNameListClass:
         print(str(self.fileName) + "の保存が完了しました。")
 
 class MenuModule:
-    def __init__(self, fileClass, fileNameListClass):
-        self.fileClass = fileClass
-        self.fileNameListClass = fileNameListClass
-        self.CM = CM.CommonModule()
-        self.FM = FileModule(fileNameListClass, fileClass)
+    def __init__(self, MyAnalysis):
+        self.fileClass = MyAnalysis.fileClass
+        self.fileNameListClass = MyAnalysis.fileNameListClass
+        self.CM = CommonModule()
+        self.FM = FileModule(self.fileNameListClass, self.fileClass)
         
-        #Open command
-        self.filefunc = [self._Openhelp for i in range(self.fileNameListClass.fileNameArray.shape[0])]
-        self.subcommand = {"showfilearray" : self.FM.ShowFileArray}
-        self.transcommand = dict(zip(self.fileNameListClass.fileNameArray, self.filefunc))
-        self.Opencmd = CM.CommandModule(commandquestion="ファイルを開く : ", subcommand=self.subcommand, transcommand=self.transcommand)
+        #ver3
+        self.OpenMode = OpenMode(MyAnalysis, question="ファイルを開く : ")
 
     def Save(self):
         self.FM.AddFileNameList(self.fileClass.fileName)
         np.save(self.fileNameListClass.fileName, self.fileNameListClass
                 .fileNameArray)
         np.save(self.fileClass.fileName, self.fileClass.dataDict)
-        self.CM.PrintLog("上書保存しました。")
+        print("上書き保存しました。")
 
     def SaveAsNew(self):
-        self.CM.PrintLog("新規保存しました。")
+        print("新規保存しました。")
 
     def OpenFile(self):
         self.fileNameListClass.Load()
         self.Opencmd.ShowCommand()
         self.Opencmd.Main()
 
-    def _Openhelp(self):
-        self.fileClass.Open(self.Opencmd.command)
-
     def NewFile(self):
-        self.CM.PrintLog("新しいファイルを作成しました。")
+        print("新しいファイルを作成しました。")
 
     def AddData(self):
         #変数リセット
@@ -164,33 +144,86 @@ class MenuModule:
             if addData in self.FM.addCommand.keys():
                 self.FM.addCommand[addData]()
 
-    def DeleteData(self):
-        self.CM.PrintLog("データを削除しました。")
-
-    def DeleteArray(self):
-        self.CM.PrintLog("配列を削除しました。")
-
-    def ReplaceData(self):
-        self.CM.PrintLog("データを並べ替えました。")
-
     def ShowData(self):
         print(self.fileClass.dataDict[self.fileClass.targetListName1])
         self.CM.PrintLog("データ表示完了しました。")
 
-    def ShowArrayList(self):
-        ""
-
-    def ShowFileArray(self):
-        self.fileNameListClass.Load()
+    def ShowFileList(self):
         print(self.fileNameListClass.fileNameArray)
-        self.CM.PrintLog("ファイルリスト表示完了しました。")
+
+    def ShowArrayList(self):
+        print([*self.fileClass.dataDict])
 
     def RenameFile(self):
         self.fileClass.fileName = self.FM.NewName(input("ファイル名変更 : "))
         self.CM.PrintLog("ファイルの名前を変更しました。")
 
+
     def RenameArray(self):
         ""
 
-    def SelectArray(self):
+#ver3
+class FileMode(OriginalClass):
+    def __init__(self, MyAnalysis, **kwargs):
+        self.CM = CommonModule()
+        self.MyAnalysis = MyAnalysis
+        self.option = {"funclist" : {},
+                       "phaselist" : []}
+        self.option.update(kwargs)
+
+        self.funclist = {"showcommand" : self.ShowCommand}
+        self.phaselist = self.option["phaselist"]
+        self.fileclass = self.MyAnalysis.fileClass
+
+        CommonModule.UpdateWithoutOverride(self.funclist, self.option["funclist"])
+
+        #追加コマンド → filename, arrayname
+
+    def Main(self):
+        command = input(self.fileclass.QuestionString())
+        if command in [*self.funclist]:
+            self.funclist[command]()
+        elif command in self.phaselist:
+            self.ChangePhase(command)
+
+class OpenMode(OriginalClass):
+    def __init__(self, MyAnalysis, **kwargs):
+        self.CM = CommonModule()
+        self.MyAnalysis = MyAnalysis
+        self.fileclass = self.MyAnalysis.fileClass
+        self.filenamelistclass = self.MyAnalysis.fileNameListClass
+        self.option = {"question" : "command : ",
+                       "funclist" : {},
+                       "phaselist" : []}
+        self.option.update(kwargs)
+
+        self.funclist = {"showcommand" : self.ShowCommand,
+                         "cancel" : self.Cancel}
+        self.phaselist = self.option["phaselist"]
+
+        CommonModule.UpdateWithoutOverride(self.funclist, self.option["funclist"])
+        self.question = self.option["question"]
+
+    def Main(self):
+        self.isPlay = True
+        self.ShowCommand()
+        while self.isPlay:
+            command = input(self.question)
+            if command in [*self.funclist]:
+                self.funclist[command]()
+
+            if command in self.filenamelistclass.fileNameArray:
+                self.fileclass.Open(command)
+                self.Cancel()
+
+    def Cancel(self):
+        self.isPlay = False
+
+    def ShowCommand(self):
+        print(self.phaselist)
+        print([*self.funclist])
+        print(self.filenamelistclass.fileNameArray)
+
+class AddDataMode(OriginalClass):
+    def Main(self):
         ""

@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>eac21510-9eba-432d-9e0d-69c28ba1e9a2</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>play.py</StartupFile>
+    <StartupFile>teststatic.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -35,6 +35,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClass.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="teststatic.py">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

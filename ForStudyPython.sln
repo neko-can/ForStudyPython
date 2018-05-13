@@ -7,8 +7,6 @@ Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ForStudyPython", "ForStudyP
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "GoalWork", "GoalWork\GoalWork.pyproj", "{629719C5-1AE5-4117-94E4-EAA00D0B9D29}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "ManageMoney2", "C:\Users\FUNNICLOWN\OneDrive - 東京理科大学\私事\ManageMoney\ManageMoney2\ManageMoney2\ManageMoney2.pyproj", "{58CCC7BA-D7DB-4723-ABE9-FC5AADF193D4}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,8 +17,6 @@ Global
 		{EAC21510-9EBA-432D-9E0D-69C28BA1E9A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{629719C5-1AE5-4117-94E4-EAA00D0B9D29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{629719C5-1AE5-4117-94E4-EAA00D0B9D29}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58CCC7BA-D7DB-4723-ABE9-FC5AADF193D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58CCC7BA-D7DB-4723-ABE9-FC5AADF193D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

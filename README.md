@@ -16,3 +16,6 @@ self.test #外部からアクセス可能
 self._test #呼び出すと警告が出る
 self.__test #外部から呼び出せない。AttributeError。._Test__testとすれば呼び出せる。
 ```
+
+## 宿題
+ * [2018/05/13 宿題](参考プログラム/HW20180513.md)
