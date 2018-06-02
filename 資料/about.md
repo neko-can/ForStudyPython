@@ -1,10 +1,21 @@
 # プログラムについて
 
+### 目次
+* <a href="#目的">目的</a>
+* <a href="#プログラム概要">プログラム概要</a>
+* <a href="#フローチャート">フローチャート</a>
+* <a href="#処理内容">処理内容</a>
+
+
+<div id="目的"></div>
+
 ## 目的
 
 対話画面で動くプログラム製作を通じて、
 Pythonの基礎を学ぼう！  
 構文の基礎を学ぼう！
+
+<div id="プログラム概要"></div>
 
 ## プログラム概要
 
@@ -32,6 +43,17 @@ Help on built-in function rand in numpy.random:
 ... 説明が続く
 
 ```
+
+<div id="フローチャート"></div>
+
+## フローチャート
+
+↓フローチャートに表すとこんな感じ
+
+<img src="../Pictures/MyProgramFlowChart.png" height="200">
+
+
+<div id="処理内容"></div>
 
 ## 処理内容
 
