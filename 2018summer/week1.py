@@ -152,36 +152,42 @@ class Sample2 :
         self.phase0Menu = {"終了" : 0,
                            "ファイル" : 1,
                            "データ分析" : 2}
-        self.phase0Dic = {self.phase0Menu["終了"] : self.SequenceModule.End,
-                          self.phase0Menu["ファイル"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, question="file : "),
-                          self.phase0Menu["データ分析"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, question="analysis : ")}
+        self.phase0Dic ={
+            self.phase0Menu["終了"] : self.SequenceModule.End,
+            self.phase0Menu["ファイル"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, question="file : ", title="ファイルモード"),
+            self.phase0Menu["データ分析"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, question="analysis : ", title="データ分析モード")
+            }
 
         self.phaseFileMenu = {"戻る" : 0,
                               "保存" : 1,
                               "書き込み" : 2,
                               "表示" : 3,
                               "選択" : 4}
-        self.phaseFileDic = {self.phaseFileMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : "),
-                             self.phaseFileMenu["保存"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Save, question="file : "),
-                             self.phaseFileMenu["書き込み"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Write, question="file : "),
-                             self.phaseFileMenu["表示"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Show, question="file : "),
-                             self.phaseFileMenu["選択"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Select, question="file : ")}
+        self.phaseFileDic = {
+            self.phaseFileMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : ", title="初期画面"),
+            self.phaseFileMenu["保存"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Save, question="file : ", title="ファイルモード"),
+            self.phaseFileMenu["書き込み"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Write, question="file : ", title="ファイルモード"),
+            self.phaseFileMenu["表示"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Show, question="file : ", title="ファイルモード"),
+            self.phaseFileMenu["選択"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Select, question="file : ", title="ファイルモード")
+            }
         
         self.phaseAnalysisMenu = {"戻る" : 0,
                                   "平均値" : 1,
                                   "分散" : 2,
                                   "標準偏差" : 3}
-        self.phaseAnalysisDic = {self.phaseAnalysisMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : "),
-                                 self.phaseAnalysisMenu["平均値"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Average, question="analysis : "),
-                                 self.phaseAnalysisMenu["分散"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Dispersion, question="analysis : "),
-                                 self.phaseAnalysisMenu["標準偏差"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.StandardDeviation, question="analysis : ")}
+        self.phaseAnalysisDic = {
+            self.phaseAnalysisMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : ", title="初期画面"),
+            self.phaseAnalysisMenu["平均値"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Average, question="analysis : ", title="データ分析モード"),
+            self.phaseAnalysisMenu["分散"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Dispersion, question="analysis : ", title="データ分析モード"),
+            self.phaseAnalysisMenu["標準偏差"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.StandardDeviation, question="analysis : ", title="データ分析モード")
+            }
         
 
         self.main = None
 
     def Main(self):
 
-        self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : ")
+        self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : ", title="初期画面")
         
         while self.enable:
             self.main()
@@ -189,13 +195,14 @@ class Sample2 :
     def InputPhase(self, menu, question="command : "):
         self.main = menu[int(input(question))]
 
-    def ShowCommand(self, menuDic):
+    def ShowCommand(self, menuDic, title):
+        print(title)
         for key in menuDic:
             print("{key} : {value}".format(key=menuDic[key], value=key))
 
-    def FuncAndInput(self, menu, menuForShow, func=lambda : print(), question="command : "):
+    def FuncAndInput(self, menu, menuForShow, func=lambda : print(), question="command : ", title="===command's menu==="):
         func()
-        self.ShowCommand(menuForShow)
+        self.ShowCommand(menuForShow, title)
         self.InputPhase(menu, question)
 
 # 実際に試してみる
