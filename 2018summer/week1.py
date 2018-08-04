@@ -1,5 +1,6 @@
-#目標 : 構造の構築
+#================================= week1 目標 : 構造の構築============================
 
+#============================= 前提 ============================
 class SequenceModule:
     def __init__(self, MainClass):
         self.MainClass = MainClass
@@ -37,7 +38,7 @@ class AnalysisModule:
     def StandardDeviation(self):
         print("標準偏差を計算しました。")
 
-# sample 1 if文による制御
+#============================================ sample 1 if文による制御====================================
 class Sample1 : 
     def __init__(self):
         self.enable = True
@@ -138,13 +139,64 @@ class Sample1 :
         for i in targetIndexes:
             self.phase[i] = 0
 
-# sample 2 delegate
+#================================= sample 2 delegateによる制御================================
 class Sample2 : 
     def __init__(self):
-        pass
+
+        self.enable = True
+
+        self.SequenceModule = SequenceModule(self)
+        self.FileModule = FileModule()
+        self.AnalysisModule = AnalysisModule()
+
+        self.phase0Menu = {"終了" : 0,
+                           "ファイル" : 1,
+                           "データ分析" : 2}
+        self.phase0Dic = {self.phase0Menu["終了"] : self.SequenceModule.End,
+                          self.phase0Menu["ファイル"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, question="file : "),
+                          self.phase0Menu["データ分析"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, question="analysis : ")}
+
+        self.phaseFileMenu = {"戻る" : 0,
+                              "保存" : 1,
+                              "書き込み" : 2,
+                              "表示" : 3,
+                              "選択" : 4}
+        self.phaseFileDic = {self.phaseFileMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : "),
+                             self.phaseFileMenu["保存"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Save, question="file : "),
+                             self.phaseFileMenu["書き込み"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Write, question="file : "),
+                             self.phaseFileMenu["表示"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Show, question="file : "),
+                             self.phaseFileMenu["選択"] : lambda : self.FuncAndInput(self.phaseFileDic, self.phaseFileMenu, func=self.FileModule.Select, question="file : ")}
+        
+        self.phaseAnalysisMenu = {"戻る" : 0,
+                                  "平均値" : 1,
+                                  "分散" : 2,
+                                  "標準偏差" : 3}
+        self.phaseAnalysisDic = {self.phaseAnalysisMenu["戻る"] : lambda : self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : "),
+                                 self.phaseAnalysisMenu["平均値"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Average, question="analysis : "),
+                                 self.phaseAnalysisMenu["分散"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.Dispersion, question="analysis : "),
+                                 self.phaseAnalysisMenu["標準偏差"] : lambda : self.FuncAndInput(self.phaseAnalysisDic, self.phaseAnalysisMenu, func=self.AnalysisModule.StandardDeviation, question="analysis : ")}
+        
+
+        self.main = None
 
     def Main(self):
-        pass
+
+        self.FuncAndInput(self.phase0Dic, self.phase0Menu, question="mode : ")
+        
+        while self.enable:
+            self.main()
+
+    def InputPhase(self, menu, question="command : "):
+        self.main = menu[int(input(question))]
+
+    def ShowCommand(self, menuDic):
+        for key in menuDic:
+            print("{key} : {value}".format(key=menuDic[key], value=key))
+
+    def FuncAndInput(self, menu, menuForShow, func=lambda : print(), question="command : "):
+        func()
+        self.ShowCommand(menuForShow)
+        self.InputPhase(menu, question)
 
 # 実際に試してみる
-Sample1().Main()
+Sample2().Main()
